@@ -1,0 +1,7 @@
+@import "tailwindcss";
+@config "../../../../tailwind.config.js";
+
+/* 
+ * Import the feature-specific CSS.
+ */
+@import "../../../../packages/@kit/email-signature/src/email-signature.css";

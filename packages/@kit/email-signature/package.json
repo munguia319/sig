@@ -1,0 +1,28 @@
+{
+  "name": "@kit/email-signature",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Email Signature Builder feature module for MakerKit (Next.js + Supabase Turbo)",
+  "exports": {
+    "./components/*": "./src/components/*.tsx",
+    "./contexts/*": "./src/contexts/*.tsx",
+    "./lib/*": "./src/lib/*.ts",
+    "./hooks/*": "./src/hooks/*.tsx",
+    "./styles": "./src/email-signature.css"
+  },
+  "peerDependencies": {
+    "react": "^18 || ^19",
+    "react-dom": "^18 || ^19",
+    "next": "^14 || ^15",
+    "lucide-react": "^0.300",
+    "@kit/ui": "workspace:*",
+    "@kit/supabase": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5",
+    "@types/react": "^18 || ^19",
+    "@types/react-dom": "^18 || ^19",
+    "@kit/ui": "workspace:*",
+    "@kit/supabase": "workspace:*"
+  }
+}

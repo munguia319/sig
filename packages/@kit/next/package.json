@@ -1,0 +1,7 @@
+{
+  "name": "@kit/next",
+  "version": "0.0.0",
+  "exports": {
+    "./routes": "./src/routes.ts"
+  }
+}

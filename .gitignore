@@ -1,19 +1,19 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
-/.pnp
+node_modules/
+.pnp
 .pnp.js
 
 # testing
-/coverage
+coverage/
 
 # next.js
-/.next/
-/out/
+.next/
+out/
 
 # production
-/build
+build/
 
 # misc
 .DS_Store
@@ -25,15 +25,32 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# local env files
-.env*.local
+
 
 # vercel
 .vercel
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+# Development-only files
+#.env*
+#!.env
+
+# IDE / editor
+.vscode/
+.idea/
+
+# Cypress artefacts (videos/screenshots)
+cypress/videos/
+
+# Build cache and temporary files
+.next/cache/
+.eslintcache
+.cache
+.tmp
+
+# Misc generated files
+*.pem
+*.log
+
 
 .idea
 .vscode
@@ -44,3 +61,27 @@ cypress/screenshots
 
 public/robots.txt
 public/sitemap.xml
+
+# System files
+Thumbs.db
+._*
+.Spotlight-V100
+.Trashes
+
+# Editor & IDE
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.bak
+
+# Logs
+*.log
+
+# Alternate Package Managers (project uses pnpm)
+package-lock.json
+yarn.lock
+
+# Cypress Videos
+cypress/videos/

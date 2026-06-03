@@ -1,0 +1,7 @@
+{
+  "name": "@kit/ui",
+  "version": "0.0.0",
+  "exports": {
+    "./sonner": "./src/sonner.tsx"
+  }
+}

@@ -1,5 +1,5 @@
 import { getMDXComponent } from 'next-contentlayer/hooks';
-import type { MDXComponents } from 'mdx/types';
+type MDXComponents = Record<string, React.ComponentType<any>>;
 import styles from './MDXRenderer.module.css';
 import Components from './MDXComponents';
 

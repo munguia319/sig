@@ -1,0 +1,416 @@
+/**
+ * MakerKit-aligned design system
+ * ================================
+ * Design language: Shadcn/ui + MakerKit defaults
+ * - Font: Inter (sans-serif)
+ * - Colors: white backgrounds, #f9fafb page bg, #e5e7eb borders
+ * - Buttons: black (#111) primary, white outline secondary
+ * - Text: #111 primary, #6b7280 muted, #374151 body
+ * - No colored accents — black/white/gray only
+ * - Radius: 0.5rem (8px) — matches MakerKit's rounded-lg
+ */
+
+
+
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+}
+
+:root {
+  --radius: 0.5rem;
+
+  /* Page */
+  --background: oklch(0.98 0 0);          /* #f9fafb */
+  --foreground: oklch(0.13 0 0);          /* #111111 */
+
+  /* Cards / panels */
+  --card: oklch(1 0 0);                   /* #ffffff */
+  --card-foreground: oklch(0.13 0 0);
+
+  /* Popovers / dropdowns */
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.13 0 0);
+
+  /* Primary = black */
+  --primary: oklch(0.13 0 0);            /* #111111 */
+  --primary-foreground: oklch(1 0 0);    /* #ffffff */
+
+  /* Secondary = light gray */
+  --secondary: oklch(0.96 0 0);          /* #f3f4f6 */
+  --secondary-foreground: oklch(0.13 0 0);
+
+  /* Muted text / backgrounds */
+  --muted: oklch(0.96 0 0);
+  --muted-foreground: oklch(0.44 0 0);   /* #6b7280 */
+
+  /* Accent (hover states) */
+  --accent: oklch(0.96 0 0);
+  --accent-foreground: oklch(0.13 0 0);
+
+  /* Destructive */
+  --destructive: oklch(0.577 0.245 27.325);
+
+  /* Borders & inputs */
+  --border: oklch(0.9 0 0);              /* #e5e7eb */
+  --input: oklch(0.9 0 0);
+  --ring: oklch(0.13 0 0);
+
+  /* Sidebar */
+  --sidebar: oklch(1 0 0);
+  --sidebar-foreground: oklch(0.13 0 0);
+  --sidebar-border: oklch(0.9 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  a[href],
+  select:not(:disabled),
+  input[type="checkbox"]:not(:disabled),
+  input[type="radio"]:not(:disabled) {
+    @apply cursor-pointer;
+  }
+}
+
+@layer components {
+  .container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .flex {
+    min-height: 0;
+    min-width: 0;
+  }
+
+  @media (min-width: 640px) {
+    .container {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container {
+      padding-left: 2rem;
+      padding-right: 2rem;
+      max-width: 1280px;
+    }
+  }
+
+  /* ── MakerKit-style button classes ── */
+
+  /* Primary: solid black */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    background-color: #111111;
+    color: #ffffff;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: var(--radius);
+    padding: 0.5rem 1rem;
+    border: 1px solid #111111;
+    transition: background-color 0.15s, opacity 0.15s;
+    font-family: 'Inter', sans-serif;
+  }
+  .btn-primary:hover {
+    background-color: #374151;
+    border-color: #374151;
+  }
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Secondary: white with gray border */
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    background-color: #ffffff;
+    color: #111111;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: var(--radius);
+    padding: 0.5rem 1rem;
+    border: 1px solid #e5e7eb;
+    transition: background-color 0.15s, border-color 0.15s;
+    font-family: 'Inter', sans-serif;
+  }
+  .btn-secondary:hover {
+    background-color: #f9fafb;
+    border-color: #d1d5db;
+  }
+
+  /* Ghost: no border, subtle hover */
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    background-color: transparent;
+    color: #374151;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: var(--radius);
+    padding: 0.5rem 1rem;
+    border: 1px solid transparent;
+    transition: background-color 0.15s;
+    font-family: 'Inter', sans-serif;
+  }
+  .btn-ghost:hover {
+    background-color: #f3f4f6;
+  }
+
+  /* Keep btn-orange as an alias for backward compat — maps to btn-primary */
+  .btn-orange {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    background-color: #111111;
+    color: #ffffff;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: var(--radius);
+    padding: 0.5rem 1rem;
+    border: 1px solid #111111;
+    transition: background-color 0.15s;
+    font-family: 'Inter', sans-serif;
+  }
+  .btn-orange:hover {
+    background-color: #374151;
+    border-color: #374151;
+  }
+
+  /* ── Form field label ── */
+  .field-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #374151;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* ── Sidebar section divider ── */
+  .sidebar-section {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e5e7eb;
+  }
+
+  /* ── Preview paper ── */
+  .preview-paper {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: var(--radius);
+  }
+
+  /* ── Sidebar shell ── */
+  .sidebar-shell {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: #ffffff;
+    width: 300px;
+  }
+
+  .sidebar-header {
+    padding: 1.25rem 1.25rem 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    flex-shrink: 0;
+  }
+
+  .sidebar-scroll {
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .sidebar-footer {
+    padding: 1rem 1.25rem;
+    border-top: 1px solid #e5e7eb;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  /* ── Accordion section ── */
+  .accordion-section {
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .accordion-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.75rem 1.25rem;
+    text-align: left;
+    transition: background-color 0.15s;
+  }
+  .accordion-trigger:hover {
+    background-color: #f9fafb;
+  }
+
+  .accordion-content {
+    padding: 0.25rem 1.25rem 1rem;
+  }
+
+  /* ── Toggle switch ── */
+  .toggle-track {
+    position: relative;
+    width: 2rem;
+    height: 1rem;
+    border-radius: 9999px;
+    transition: background-color 0.15s;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  .toggle-track-on  { background-color: #111111; }
+  .toggle-track-off { background-color: #e5e7eb; }
+
+  .toggle-thumb {
+    position: absolute;
+    top: 0.125rem;
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 9999px;
+    background: #ffffff;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    transition: transform 0.15s;
+  }
+  .toggle-thumb-on  { transform: translateX(18px); }
+  .toggle-thumb-off { transform: translateX(2px); }
+
+  /* ── Badge ── */
+  .section-badge {
+    font-size: 0.625rem;
+    font-family: 'Inter', monospace;
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
+    background: #f3f4f6;
+    color: #374151;
+  }
+
+  /* ── Field label section heading ── */
+  .field-section-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #374151;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+  }
+
+  /* ── Icon muted ── */
+  .icon-muted {
+    color: #9ca3af;
+  }
+
+  /* ── App header ── */
+  .app-header {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+
+  /* ── Divider vertical ── */
+  .divider-v {
+    width: 1px;
+    height: 1.25rem;
+    background-color: #e5e7eb;
+  }
+
+  /* ── App icon badge ── */
+  .app-icon-badge {
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 0.375rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f3f4f6;
+  }
+
+  /* ── Gallery card ── */
+  .gallery-card {
+    background: #ffffff;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    cursor: pointer;
+    transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+  .gallery-card:hover {
+    border-color: #111111;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+    transform: translateY(-2px);
+  }
+
+  /* ── Modal overlay ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background-color: rgba(0,0,0,0.55);
+  }
+
+  /* ── Preview frame ── */
+  .preview-bg {
+    background: #f9fafb;
+  }
+}

@@ -18,7 +18,6 @@ async function initializeBrowserSentry() {
   }
 
   const Sentry = await import('@sentry/react');
-  const { BrowserTracing } = await import('@sentry/browser');
 
   if (!isBrowser() || initialized) {
     return;
@@ -26,7 +25,7 @@ async function initializeBrowserSentry() {
 
   Sentry.init({
     dsn,
-    integrations: [new BrowserTracing()],
+    integrations: [new (Sentry as any).BrowserTracing()],
     tracesSampleRate: 1.0,
     environment: configuration.environment,
   });

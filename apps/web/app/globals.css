@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+/* 
+ * Ensure Tailwind scans the workspace package for used classes.
+ * Path is relative to this file: ../ (app) -> ../ (web) -> ../ (apps) -> root
+ */
+@source "../../../packages/@kit/email-signature/src/**/*.{ts,tsx,css}";
+
+/* 
+ * Import the feature-specific CSS.
+ */
+@import "../../../packages/@kit/email-signature/src/email-signature.css";
+
+@import '@kit/email-signature/styles';

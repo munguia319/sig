@@ -10,7 +10,7 @@ const BillingPortalRedirectButton: React.FCC<{
   className?: string;
 }> = ({ children, customerId, className }) => {
   return (
-    <form action={createBillingPortalSessionAction}>
+    <form action={createBillingPortalSessionAction as any}>
       <input type={'hidden'} name={'customerId'} value={customerId} />
 
       <Button

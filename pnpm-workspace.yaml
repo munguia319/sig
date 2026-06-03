@@ -1,0 +1,11 @@
+packages:
+  - 'apps/*'
+  - 'packages/**/*'
+allowBuilds:
+  contentlayer: true
+  cypress: true
+  esbuild: true
+  protobufjs: true
+  sharp: true
+  supabase: true
+  unrs-resolver: true
