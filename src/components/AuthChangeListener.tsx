@@ -7,6 +7,7 @@ import isBrowser from '~/core/generic/is-browser';
 import useSupabase from '~/core/hooks/use-supabase';
 import UserSessionContext from '~/core/session/contexts/user-session';
 
+
 const AuthRedirectListener: React.FCC<{
   whenSignedOut?: string;
 }> = ({ children, whenSignedOut }) => {
