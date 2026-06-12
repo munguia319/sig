@@ -334,24 +334,28 @@ const SignatureContext = createContext<SignatureContextValue | null>(null);
 export function SignatureProvider({
   children,
   initialTemplate = 'the-opensend',
+  initialEmployeeId = null,
   accountId,
+  csrfToken,
 }: {
   children: React.ReactNode;
   initialTemplate?: string;
+  initialEmployeeId?: string | null;
   accountId?: string;
+  csrfToken?: string;
 }) {
   const defaultFields = useMemo(() => getDefaultFieldsForTemplate(initialTemplate), [initialTemplate]);
   const supabase = useMemo(() => createSupabaseBrowserClient(), []);
   const [fields, setFieldsState] = useState<SignatureFields>(defaultFields);
   const [employees, setEmployees] = useState<SavedEmployee[]>([]);
-  const [activeEmployeeId, setActiveEmployeeId] = useState<string | null>(null);
+  const [activeEmployeeId, setActiveEmployeeId] = useState<string | null>(initialEmployeeId);
   const [isDirty, setIsDirty] = useState(false);
 
   useEffect(() => {
     setEmployees([]);
-    setActiveEmployeeId(null);
+    setActiveEmployeeId(initialEmployeeId);
     setFieldsState(defaultFields);
-  }, [accountId, defaultFields]);
+  }, [accountId, defaultFields, initialEmployeeId]);
 
   useEffect(() => {
     if (!accountId) return;
@@ -373,8 +377,8 @@ export function SignatureProvider({
       setEmployees(
         (data ?? []).map((row) => ({
           id: row.id,
-          employeeName: row.employee_name,
-          templateId: row.template_id,
+          employeeName: row.employee_name || 'Unnamed',
+          templateId: row.template_id || 'the-opensend',
           fields: row.fields as SignatureFields,
           updatedAt: typeof row.updated_at === 'string'
             ? row.updated_at
@@ -400,117 +404,64 @@ export function SignatureProvider({
   }, []);
 
   const saveEmployee = useCallback(async () => {
-    if (!accountId) {
-      toast.error('Missing account ID');
-      return;
-    }
-
     const name = fields.fullName.trim() || 'Unnamed Employee';
+    const nameParts = name.split(' ');
+    const firstName = nameParts[0] || '';
+    const lastName = nameParts.slice(1).join(' ') || '';
+
     const payload = {
       id: activeEmployeeId ?? undefined,
-      account_id: accountId,
-      employee_name: name,
-      template_id: fields.activeTemplate,
-      fields,
-      updated_at: new Date().toISOString(),
+      organizationId: accountId ?? undefined,
+      firstName,
+      lastName,
+      signatureData: {
+        templateId: fields.activeTemplate,
+        fields,
+      },
     };
 
-    let response;
     try {
-      if (activeEmployeeId) {
-        // Use update for clarity when editing an existing employee
-        response = await supabase
-          .from('email_signatures')
-          .update({
-            employee_name: payload.employee_name,
-            template_id: payload.template_id,
-            fields: payload.fields,
-            updated_at: payload.updated_at,
-          })
-          .eq('id', activeEmployeeId)
-          .eq('account_id', accountId)
-          .select('*')
-          .single();
-      } else {
-        const { data: existing, error: findError } = await supabase
-          .from('email_signatures')
-          .select('id')
-          .eq('account_id', accountId)
-          .eq('template_id', payload.template_id)
-          .order('updated_at', { ascending: false })
-          .maybeSingle();
+      const res = await fetch('/api/signatures', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(csrfToken ? { 'X-CSRF-Token': csrfToken } : {}),
+        },
+        body: JSON.stringify(payload),
+      });
 
-        if (findError) {
-          toast.error('Could not check existing signature');
-          // eslint-disable-next-line no-console
-          console.error('saveEmployee find error', findError);
-          return;
-        }
-
-        if (existing && existing.id) {
-          response = await supabase
-            .from('email_signatures')
-            .update({
-              employee_name: payload.employee_name,
-              fields: payload.fields,
-              updated_at: payload.updated_at,
-            })
-            .eq('id', existing.id)
-            .eq('account_id', accountId)
-            .select('*')
-            .single();
-        } else {
-          response = await supabase
-            .from('email_signatures')
-            .insert({
-              account_id: payload.account_id,
-              employee_name: payload.employee_name,
-              template_id: payload.template_id,
-              fields: payload.fields,
-              updated_at: payload.updated_at,
-            })
-            .select('*')
-            .single();
-        }
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.error || 'Failed to save signature');
       }
-    } catch (err) {
-      toast.error('Could not save signature');
+
+      const { data: saved } = await res.json();
+
+      const updatedEmployee: SavedEmployee = {
+        id: saved.id,
+        employeeName: saved.employee_name || name,
+        templateId: saved.template_id || fields.activeTemplate,
+        fields: (saved.fields as SignatureFields) || fields,
+        updatedAt: saved.updated_at,
+      };
+
+      setEmployees((prev) => {
+        const exists = prev.some((emp) => emp.id === updatedEmployee.id);
+        return exists
+          ? prev.map((emp) => (emp.id === updatedEmployee.id ? updatedEmployee : emp))
+          : [updatedEmployee, ...prev];
+      });
+
+      setActiveEmployeeId(updatedEmployee.id);
+      setFieldsState(updatedEmployee.fields);
+      setIsDirty(false);
+      toast.success(`${activeEmployeeId ? 'Saved' : 'Created'} signature for ${name}`);
+    } catch (err: any) {
+      toast.error(err.message || 'Could not save signature');
       // eslint-disable-next-line no-console
       console.error('saveEmployee exception', err);
-      return;
     }
-
-    if (response?.error || !response?.data) {
-      const msg = response?.error?.message ?? 'Could not save signature';
-      toast.error(msg);
-      // eslint-disable-next-line no-console
-      console.error('saveEmployee error', response?.error);
-      return;
-    }
-
-    const saved = response.data;
-    const updatedEmployee: SavedEmployee = {
-      id: saved.id,
-      employeeName: saved.employee_name,
-      templateId: saved.template_id,
-      fields: saved.fields as SignatureFields,
-      updatedAt: typeof saved.updated_at === 'string'
-        ? saved.updated_at
-        : saved.updated_at?.toISOString() ?? new Date().toISOString(),
-    };
-
-    setEmployees((prev) => {
-      const exists = prev.some((emp) => emp.id === updatedEmployee.id);
-      return exists
-        ? prev.map((emp) => (emp.id === updatedEmployee.id ? updatedEmployee : emp))
-        : [updatedEmployee, ...prev];
-    });
-
-    setActiveEmployeeId(updatedEmployee.id);
-    setFieldsState(updatedEmployee.fields);
-    setIsDirty(false);
-    toast.success(`${activeEmployeeId ? 'Saved' : 'Created'} signature for ${name}`);
-  }, [accountId, activeEmployeeId, fields, supabase]);
+  }, [accountId, activeEmployeeId, fields]);
 
   const deleteEmployee = useCallback(async (id: string) => {
     if (!accountId) {

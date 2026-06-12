@@ -14,31 +14,35 @@ type Template = {
 
 export function TemplateGallery({ accountSlug }: { accountSlug: string }) {
   const [templates, setTemplates] = useState<Template[]>([]);
+  const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let mounted = true;
+    setMounted(true);
+    let active = true;
     fetch('/api/templates')
       .then((r) => {
         if (!r.ok) throw new Error('bad response');
         return r.json();
       })
       .then((data) => {
-        if (!mounted) return;
+        if (!active) return;
         setTemplates(data.templates ?? []);
       })
       .catch((error) => {
-        // If the DB/API request fails, show an empty gallery and keep the error visible via console.
-        // The gallery is intentionally dynamic and now depends only on the DB-backed API.
         // eslint-disable-next-line no-console
         console.error('Failed to load templates', error);
         setTemplates([]);
       })
       .finally(() => setLoading(false));
     return () => {
-      mounted = false;
+      active = false;
     };
   }, []);
+
+  if (!mounted) {
+    return <div className="min-h-screen bg-[#f9fafb]" />;
+  }
 
   return (
     <div className="min-h-screen bg-[#f9fafb]">

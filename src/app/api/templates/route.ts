@@ -1,8 +1,12 @@
 import { NextResponse } from 'next/server';
-import { createSupabaseServerClient } from '@kit/supabase/server-client';
+import { createClient } from '@supabase/supabase-js';
 
 export async function GET() {
-  const supabase = await createSupabaseServerClient();
+  // Use service role to bypass RLS — signature_templates is public read-only data
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  );
 
   const { data, error } = await supabase
     .from('signature_templates')
